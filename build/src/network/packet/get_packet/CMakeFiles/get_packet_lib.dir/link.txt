@@ -1,0 +1,2 @@
+/usr/bin/ar qc libget_packet_lib.a CMakeFiles/get_packet_lib.dir/get_packet.cpp.o
+/usr/bin/ranlib libget_packet_lib.a

@@ -1,0 +1,2 @@
+/usr/bin/ar qc libconsole_network_interfaces_lib.a CMakeFiles/console_network_interfaces_lib.dir/console_network_interfaces.cpp.o
+/usr/bin/ranlib libconsole_network_interfaces_lib.a
