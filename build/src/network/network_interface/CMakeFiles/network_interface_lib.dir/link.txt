@@ -1,2 +1,0 @@
-/usr/bin/ar qc libnetwork_interface_lib.a CMakeFiles/network_interface_lib.dir/get_network_interfaces.cpp.o
-/usr/bin/ranlib libnetwork_interface_lib.a

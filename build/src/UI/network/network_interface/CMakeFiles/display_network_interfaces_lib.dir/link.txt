@@ -1,2 +1,0 @@
-/usr/bin/ar qc libdisplay_network_interfaces_lib.a CMakeFiles/display_network_interfaces_lib.dir/display_network_interfaces.cpp.o
-/usr/bin/ranlib libdisplay_network_interfaces_lib.a

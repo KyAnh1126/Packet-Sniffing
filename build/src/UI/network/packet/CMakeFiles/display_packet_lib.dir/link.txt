@@ -1,2 +1,0 @@
-/usr/bin/ar qc libdisplay_packet_lib.a CMakeFiles/display_packet_lib.dir/display_packet.cpp.o
-/usr/bin/ranlib libdisplay_packet_lib.a

@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/packet_output.dir/src/main.cpp.o -o packet_output  src/network/network_interface/libnetwork_interface_lib.a src/UI/network/network_interface/libdisplay_network_interfaces_lib.a src/network/packet/get_packet/libget_packet_lib.a src/UI/network/packet/libdisplay_packet_detail_lib.a 
