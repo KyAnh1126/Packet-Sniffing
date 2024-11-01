@@ -1,0 +1,10 @@
+# ignore directory
+/build/
+/bin/
+/data/
+/doc/
+/lib/
+/obj/
+/temp/
+/test/
+/.vscode/

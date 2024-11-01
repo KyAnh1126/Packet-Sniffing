@@ -37,7 +37,7 @@ void display_packet_ETH(struct ethhdr* eth_hdr) {
 }
 
 void display_packet_l2hdr(struct packet* packet) {
-    struct ethhdr* eth_hdr = (ethhdr*) (packet->buffer + get_prev_len(packet, E_NETWORK));
+    struct ethhdr* eth_hdr = (ethhdr*) (packet->buffer + get_prev_len(packet, L_NETWORK));
     display_packet_ETH(eth_hdr);
 }
 
@@ -92,14 +92,14 @@ void display_packet_IPv6(struct ipv6hdr* ipv6_hdr) {
 }
 
 void display_packet_l3hdr(struct packet* packet) {
-    int prev_len = get_prev_len(packet, E_INTERNET);
+    int prev_len = get_prev_len(packet, L_INTERNET);
 
-    if(packet->l3hdr_tag == E_IP) {
+    if(packet->l3hdr_tag == L3_IP) {
         struct iphdr* ip_hdr = (iphdr*) (packet->buffer + prev_len);
         display_packet_IP(ip_hdr);
     }
 
-    if(packet->l3hdr_tag == E_IPV6) {
+    if(packet->l3hdr_tag == L3_IPV6) {
         struct ipv6hdr* ipv6_hdr = (ipv6hdr*) (packet->buffer + prev_len);
         display_packet_IPv6(ipv6_hdr);
     }
@@ -130,21 +130,21 @@ void display_packet_UDP(struct udphdr* udp_hdr) {
 }
 
 void display_packet_l4hdr(struct packet* packet) {
-    int prev_len = get_prev_len(packet, E_TRANSPORT);
+    int prev_len = get_prev_len(packet, L_TRANSPORT);
 
-    if(packet->l4hdr_tag == E_TCP) {
+    if(packet->l4hdr_tag == L4_TCP) {
         struct tcphdr* tcp_hdr = (tcphdr*) (packet->buffer + prev_len);
         display_packet_TCP(tcp_hdr);
     }
 
-    if(packet->l4hdr_tag == E_UDP) {
+    if(packet->l4hdr_tag == L4_UDP) {
         struct udphdr* udp_hdr = (udphdr*) (packet->buffer + prev_len);
         display_packet_UDP(udp_hdr);
     }
 }
 
 void display_packet_payload(struct packet* packet) {
-    int prev_len = get_prev_len(packet, E_APPLICATION);
+    int prev_len = get_prev_len(packet, L_APPLICATION);
 
     char* data = packet->buffer + prev_len;
     char* binary_data;
@@ -200,13 +200,13 @@ void display_packet_detail_id(int id) {
 }
 
 void display_packet_general(packet* packet) {
-    int prev_len = packet->l2hdr_len;
+    int prev_len = packet->get_l2hdr_len();
 
     char* source_IP = NULL;
     char* dest_IP = NULL;
     char* l4proto = NULL;
 
-    if(packet->l3hdr_tag == E_IP) {
+    if(packet->l3hdr_tag == L3_IP) {
         struct iphdr* ip_hdr = (iphdr*) (packet->buffer + prev_len);
         source_IP = new char[INET_ADDRSTRLEN];
         dest_IP = new char[INET_ADDRSTRLEN];
@@ -214,7 +214,7 @@ void display_packet_general(packet* packet) {
         inet_ntop(AF_INET, &ip_hdr->daddr, dest_IP, INET_ADDRSTRLEN);
     }
 
-    if(packet->l3hdr_tag == E_IPV6) {
+    if(packet->l3hdr_tag == L3_IPV6) {
         struct ipv6hdr* ipv6_hdr = (ipv6hdr*) (packet->buffer + prev_len);
         source_IP = new char[INET6_ADDRSTRLEN];
         dest_IP = new char[INET6_ADDRSTRLEN];
@@ -222,17 +222,17 @@ void display_packet_general(packet* packet) {
         inet_ntop(AF_INET6, &ipv6_hdr->daddr, dest_IP, INET6_ADDRSTRLEN);
     }
 
-    if(packet->l4hdr_tag == E_TCP) {
+    if(packet->l4hdr_tag == L4_TCP) {
         l4proto = new char[4];
         strncpy(l4proto, "TCP", 4);
     }
 
-    if(packet->l4hdr_tag == E_UDP) {
+    if(packet->l4hdr_tag == L4_UDP) {
         l4proto = new char[4];
         strncpy(l4proto, "UDP", 4);
     }
 
-    if(packet->l4hdr_tag == UNKNOWN_L4) {
+    if(packet->l4hdr_tag == L4_UNKNOWN) {
         l4proto = new char[8];
         strncpy(l4proto, "UNKNOWN", 8);
     }

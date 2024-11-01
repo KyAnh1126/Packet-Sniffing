@@ -33,10 +33,11 @@ int open_socket(int* sock) {
 }
 
 int get_prev_len(struct packet* packet, int layer) {
-    if(layer == E_NETWORK) return 0;
-    if(layer == E_INTERNET) return packet->l2hdr_len;
-    if(layer == E_TRANSPORT) return packet->l2hdr_len + packet->l3hdr_len;
-    if(layer == E_APPLICATION) return packet->l2hdr_len + packet->l3hdr_len + packet->l4hdr_len;
+    if(layer == L_NETWORK) return 0;
+    if(layer == L_INTERNET) return packet->get_l2hdr_len();
+    if(layer == L_TRANSPORT) return packet->get_l2hdr_len() + packet->get_l3hdr_len();
+    if(layer == L_APPLICATION) return packet->get_l2hdr_len() + packet->get_l3hdr_len() + packet->get_l4hdr_len();
+    return -1;
 }
 
 void get_packet(char* buffer, packet* packet, int id, int buflen) {
@@ -44,50 +45,51 @@ void get_packet(char* buffer, packet* packet, int id, int buflen) {
     packet->id = id;
     packet->total_length = buflen;
 
-    int l2hdr_tag = UNKNOWN_L2, l2hdr_len = -1;
-    int l3hdr_tag = UNKNOWN_L3, l3hdr_len = -1;
-    int l4hdr_tag = UNKNOWN_L4, l4hdr_len = -1;
+    int l2hdr_tag = L2_UNKNOWN, l2hdr_len = -1;
+    int l3hdr_tag = L3_UNKNOWN, l3hdr_len = -1;
+    int l4hdr_tag = L4_UNKNOWN, l4hdr_len = -1;
     int payload_len = -1;
 
     int prev_len = 0;
 
+    l2hdr_tag = L2_ETH;
     l2hdr_len = sizeof(struct ethhdr);
     struct ethhdr* eth_hdr = (struct ethhdr*) buffer;
 
     if (eth_hdr->h_proto == ETH_IP_DEC) {
-        l3hdr_tag = E_IP;
+        l3hdr_tag = L3_IP;
         l3hdr_len = sizeof(struct iphdr);
     }
 
     if (eth_hdr->h_proto == ETH_IPV6_DEC) {
-        l3hdr_tag = E_IPV6;
+        l3hdr_tag = L3_IPV6;
         l3hdr_len = sizeof(struct ipv6hdr);
     }
 
     prev_len += l2hdr_len;
 
-    if (l3hdr_tag == E_IP) {
+    if (l3hdr_tag == L3_IP) {
         struct iphdr* ip_hdr = (struct iphdr*) (buffer + prev_len);
         if (ip_hdr->protocol == IPPROTO_TCP) {
-            l4hdr_tag = E_TCP;
+            l4hdr_tag = L4_TCP;
             l4hdr_len = sizeof(struct tcphdr);
         }
 
         if (ip_hdr->protocol == IPPROTO_UDP) {
-            l4hdr_tag = E_UDP;
+            l4hdr_tag = L4_UDP;
             l4hdr_len = sizeof(struct udphdr);
         }
     }
 
-    if (l3hdr_tag == E_IPV6) {
+    if (l3hdr_tag == L3_IPV6) {
         struct ipv6hdr* ipv6_hdr = (struct ipv6hdr*) (buffer + prev_len);
         if (ipv6_hdr->nexthdr == IPPROTO_TCP) {
-            l4hdr_tag = E_TCP;
+            l4hdr_tag = L4_TCP;
             l4hdr_len = sizeof(struct tcphdr);
         }
 
         if (ipv6_hdr->nexthdr == IPPROTO_UDP) {
-            l4hdr_tag = E_UDP;
+            l4hdr_tag = L4_UDP;
             l4hdr_len = sizeof(struct udphdr);
         }
     }
@@ -96,21 +98,14 @@ void get_packet(char* buffer, packet* packet, int id, int buflen) {
 
     prev_len += l4hdr_len;
 
-    if(l4hdr_tag == E_TCP || l4hdr_tag == E_UDP) {
+    if(l4hdr_tag == L4_TCP || l4hdr_tag == L4_UDP) {
         payload_len = packet->total_length - prev_len;
     }
 
     packet->l2hdr_tag = l2hdr_tag;
-    packet->l2hdr_len = l2hdr_len;
-
     packet->l3hdr_tag = l3hdr_tag;
-    packet->l3hdr_len = l3hdr_len;
-
     packet->l4hdr_tag = l4hdr_tag;
-    packet->l4hdr_len = l4hdr_len;
-
     packet->payload_len = payload_len;
-
     packet->buffer = buffer;
 }
 
@@ -136,11 +131,6 @@ void get_packets() {
             close(sock_r);
             return;
         }
-
-        int l2hdr_tag, l2hdr_len;
-        int l3hdr_tag, l3hdr_len;
-        int l4hdr_tag, l4hdr_len;
-        int prev_len;
 
         struct packet recv_packet;
         recv_packet.id = packets.size() + 1;
