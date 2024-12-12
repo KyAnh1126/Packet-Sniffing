@@ -19,14 +19,12 @@ Cách chạy chương trình:
 Kết quả chương trình:
 
 1. Hiển thị thông tin của từng cổng mạng hiện có:
-![image](https://github.com/user-attachments/assets/b5765551-bf43-4603-85ea-0bec4e41a892)
+![6](https://github.com/user-attachments/assets/299f62f8-422c-46b5-806c-4f63909220ff)
 
 2. Hiển thị thông tin tổng quát của các packet:
-![image](https://github.com/user-attachments/assets/573ed18e-f892-4daa-9c37-c365f24c5c5e)
+![7](https://github.com/user-attachments/assets/8bbde439-a1b9-45fc-bc37-d1099e318a82)
 
 3. Lấy thông tin chi tiết dựa trên ID:
-![image](https://github.com/user-attachments/assets/d3ecea02-adea-4f20-b406-ffe83831c2bd)
+![8](https://github.com/user-attachments/assets/00ec0984-36eb-496b-84b5-8b44bb32282d)
 
-![image](https://github.com/user-attachments/assets/6bffe59b-7739-4c3a-90f9-1c3f0e6ecaa6)
-
-
+![9](https://github.com/user-attachments/assets/29ee12ba-fdca-4a99-86bb-67b83074a14e)
